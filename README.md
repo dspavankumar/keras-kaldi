@@ -1,6 +1,6 @@
-Keras Interface for Kaldi ASR
+## Keras Interface for Kaldi ASR
 
-Why these Routines?
+## Why these Routines?
 
 This code interfaces Kaldi tools for Speech Recognition and Keras 
 tools for Deep Learning. Keras simplifies the latest deep 
@@ -11,7 +11,7 @@ and here is one. This code directly interacts with Kaldi style
 directories of data and alignments to build and test Deep 
 Learning models in Keras.
 
-Features
+## Features
 
 1. Trains DNNs from Kaldi GMM system
 
@@ -26,7 +26,7 @@ Features
 
 6. Decodes test utterances in Kaldi style
 
-Dependencies
+## Dependencies
 
 1. Python 3.4+
 
@@ -34,12 +34,12 @@ Dependencies
 
 3. Kaldi
 
-Using the Code
+## Using the Code
 
 Train a GMM system in Kaldi. Place steps_kt and run_kt.sh in the 
 working directory. Configure and run run_kt.sh.
 
-Code Components
+## Code Components
 
 1. train.py is the Keras training script. DNN structure (type of 
   network, activations, number of hidden layers and nodes) can be 
@@ -57,7 +57,7 @@ Code Components
 
 5. decode.py is the decoding script.
 
-Training Schedule
+## Training Schedule
 
 The script uses stochastic gradient descent with 0.5 momentum. It 
 starts with a learning rate of 0.1 for a minimum of 10 
@@ -65,3 +65,9 @@ iterations. When the validation loss reduces by less than 0.002
 between successive iterations, learning rate is halved. Training 
 is continued till learning rate is scaled 18 times.
 
+## Contributors
+D S Pavan Kumar
+dspavankumar [at] gmail [dot] com
+
+## License
+GNU GPL v3
