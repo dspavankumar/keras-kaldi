@@ -67,6 +67,7 @@ is continued till learning rate is scaled 18 times.
 
 ## Contributors
 D S Pavan Kumar
+
 dspavankumar [at] gmail [dot] com
 
 ## License
