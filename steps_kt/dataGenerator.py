@@ -73,7 +73,7 @@ class dataGenerator:
         
     ## Determine the number of output labels
     def readOutputFeatDim (self):
-        p1 = Popen (['gmm-info', '%s/final.mdl' % self.exp], stdout=PIPE)
+        p1 = Popen (['am-info', '%s/final.mdl' % self.exp], stdout=PIPE)
         modelInfo = p1.stdout.read().splitlines()
         for line in modelInfo:
             if b'number of pdfs' in line:
