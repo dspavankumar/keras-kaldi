@@ -69,11 +69,14 @@ is continued till learning rate is scaled 18 times.
 
 Timit database of 8 kHz sampling rate was used to train monophone,
 triphone (300 pdfs), LDA+MLLT (500 pdfs) and DNN models.
-
 Phone error rates are as follows:
+
 Monophone: 34.25%
+
 Triphone: 30.44%
+
 LDA+MLLT: 27.03%
+
 DNN: 23.70%
 
 ## Contributors
