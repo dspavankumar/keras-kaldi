@@ -38,8 +38,8 @@ if __name__ == '__main__':
     signal (SIGPIPE, SIG_DFL)
 
     uttId, featMat = kaldiIO.readUtterance(arkIn)
-    logProbMat = numpy.log (m.predict (featMat))
     while uttId:
+        logProbMat = numpy.log (m.predict (featMat))
         kaldiIO.writeUtterance(uttId, logProbMat, arkOut, encoding)
         uttId, featMat = kaldiIO.readUtterance(arkIn)
     
