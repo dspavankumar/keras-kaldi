@@ -1,4 +1,4 @@
-## Keras Interface for Kaldi ASR
+# Keras Interface for Kaldi ASR
 
 ## Why these Routines?
 
@@ -64,6 +64,17 @@ starts with a learning rate of 0.1 for a minimum of 10
 iterations. When the validation loss reduces by less than 0.002 
 between successive iterations, learning rate is halved. Training 
 is continued till learning rate is scaled 18 times.
+
+## Results on Timit Phone Recognition
+
+Timit database of 8 kHz sampling rate was used to train monophone,
+triphone (300 pdfs), LDA+MLLT (500 pdfs) and DNN models.
+
+Phone error rates are as follows:
+Monophone: 34.25%
+Triphone: 30.44%
+LDA+MLLT: 27.03%
+DNN: 23.70%
 
 ## Contributors
 D S Pavan Kumar
