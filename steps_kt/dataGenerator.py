@@ -21,7 +21,6 @@ from subprocess import Popen, PIPE, DEVNULL
 import tempfile
 import kaldiIO
 import pickle
-import struct
 import numpy
 import os
 
