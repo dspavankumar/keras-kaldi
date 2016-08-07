@@ -62,9 +62,10 @@ m = keras.models.Sequential([
 
 ## Initial training
 m.compile(loss='categorical_crossentropy', optimizer=s, metrics=['accuracy'])
+print ('Learning rate: %f' % learning['rate'])
 h = [m.fit_generator (trGen, samples_per_epoch=trGen.numFeats, 
         validation_data=cvGen, nb_val_samples=cvGen.numFeats,
-        nb_epoch=learning['minEpoch'], verbose=2)]
+        nb_epoch=learning['minEpoch'], verbose=1)]
 m.save (exp + '/dnn.nnet.h5', overwrite=True)
 
 ## Refine learning based on validation loss
@@ -81,7 +82,7 @@ while True:
     
     h.append (m.fit_generator (trGen, samples_per_epoch=trGen.numFeats,
             validation_data=cvGen, nb_val_samples=cvGen.numFeats,
-            nb_epoch=1, verbose=2))
+            nb_epoch=1, verbose=1))
     prevValError = h[-2].history['val_loss'][-1]
     m.save (exp + '/dnn.nnet.h5', overwrite=True)
 

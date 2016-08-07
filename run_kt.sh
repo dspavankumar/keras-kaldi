@@ -46,8 +46,10 @@ done
 
 
 ## Make graph
-[ -f $gmm/graph/HCLG.fst ] || utils/mkgraph.sh $lang $gmm $gmm/graph
+[ -f $gmm/graph/HCLG.fst ] || utils/mkgraph.sh ${lang}_test_bg $gmm $gmm/graph
 
 ## Decode
 cp $gmm/final.mdl $gmm/tree $exp/
-[ -f $exp/decode/wer_11 ] || bash steps_kt/decode.sh --nj $nj $test $gmm/graph $exp $exp/decode
+[ -f $exp/decode/wer_11 ] || bash steps_kt/decode.sh --nj $nj \
+    --add-deltas "true" --norm-vars "true" --splice-opts "--left-context=5 --right-context=5" \
+    $test $gmm/graph $exp $exp/decode

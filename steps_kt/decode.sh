@@ -31,9 +31,10 @@ acwt=0.1 # acoustic weight used in getting lattices
 skip_scoring=false # whether to skip WER scoring
 scoring_opts=
 
-splice_opts="--left-context=5 --right-context=5"
-norm_vars="true"
-add_deltas="true"
+splice_opts=
+norm_vars=
+add_deltas=
+THEANO_FLAGS="device=cpu"
 
 ## End configuration section
 
@@ -71,6 +72,8 @@ echo $nj > $dir/num_jobs
 for f in $graphdir/HCLG.fst $data/feats.scp $dnndir/tree; do
   [ ! -f $f ] && echo "$0: no such file $f" && exit 1;
 done
+
+export $THEANO_FLAGS
 
 ## Set up the features
 echo "$0: feature: splice(${splice_opts}) norm_vars(${norm_vars}) add_deltas(${add_deltas})"

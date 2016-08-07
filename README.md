@@ -19,7 +19,7 @@ Learning models in Keras.
 
 3. Supports mini-batch training
 
-4. Supports maxout and dropout training
+4. Supports LSTMs, maxout and dropout training
 
 5. Easily extendable to other deep learning implementations in 
   Keras
@@ -37,25 +37,29 @@ Learning models in Keras.
 ## Using the Code
 
 Train a GMM system in Kaldi. Place steps_kt and run_kt.sh in the 
-working directory. Configure and run run_kt.sh.
+working directory. Configure and run run_kt.sh. To train LSTMs,
+run run_kt_LSTM.sh.
 
 ## Code Components
 
 1. train.py is the Keras training script. DNN structure (type of 
   network, activations, number of hidden layers and nodes) can be 
-  configured in this script.
+  configured in this script. train_LSTM.py trains LSTMs.
 
 2. dataGenerator.py provides an object that reads Kaldi data and 
   alignment directories in batches and retrieves mini-batches for 
-  training.
+  training. dataGenSequences.py retrieves 3D mini-batches for
+  LSTM training.
 
 3. nnet-forward.py passes test features through the trained DNNs 
   and outputs log probabilities (log of DNN outputs) in Kaldi 
-  format.
+  format. nnet-forward-seq.py passes 3D arrays to LSTMs and
+  outputs log probabilities.
 
 4. kaldiIO.py reads and writes Kaldi-type binary features.
 
-5. decode.py is the decoding script.
+5. decode.py is the decoding script. decode_seq.py is the script
+  for LSTMs.
 
 ## Training Schedule
 
@@ -77,7 +81,7 @@ Phone error rates are as follows:
 
 3. LDA+MLLT: 27.03%
 
-4. DNN: 23.70%
+4. DNN (3 hidden layers of 1024 nodes, ReLU activations): 23.70%
 
 ## Contributors
 D S Pavan Kumar
