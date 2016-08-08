@@ -83,6 +83,8 @@ Phone error rates are as follows:
 
 4. DNN (3 hidden layers of 1024 nodes, ReLU activations): 23.70%
 
+5. LSTM (3 hidden layers of 256 nodes, Tanh activations, LDA+MLLT alignments): 23.06%
+
 ## Contributors
 D S Pavan Kumar
 
