@@ -21,6 +21,7 @@ from subprocess import Popen, PIPE, DEVNULL
 import tempfile
 import kaldiIO
 import pickle
+import shutil
 import numpy
 import os
 
@@ -59,9 +60,10 @@ class dataGenerator:
             self.numUtterances = sum(1 for line in f)
         self.numSplit = - (-self.numUtterances // self.maxSplitDataSize)
 
-        ## Split data dir
-        if not os.path.isdir (data + 'split' + str(self.numSplit)):
-            Popen (['utils/split_data.sh', data, str(self.numSplit)]).communicate()
+        ## Split data dir per utterance (per speaker split may give non-uniform splits)
+        if os.path.isdir (data + 'split' + str(self.numSplit)):
+            shutil.rmtree (data + 'split' + str(self.numSplit))
+        Popen (['utils/split_data.sh', '--per-utt', data, str(self.numSplit)]).communicate()
         
         ## Save split labels and delete labels
         self.splitSaveLabels (labels)
