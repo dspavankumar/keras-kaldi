@@ -158,6 +158,12 @@ class dataGenSequences:
             self.y_2d = self.y[(self.spliceSize-1)//2 : -(self.spliceSize-1)//2]
             self.batchPointer = 0
 
+            ## Shuffle data
+            randomInd = numpy.array(range(len(self.x_3d)))
+            numpy.random.shuffle(randomInd)
+            self.x_3d = self.x_3d[randomInd]
+            self.y_2d = self.y_2d[randomInd]
+
             if self.splitDataCounter == self.numSplit:
                 self.splitDataCounter = 0
                 self.doUpdateSplit = False
