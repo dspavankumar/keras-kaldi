@@ -153,6 +153,12 @@ class dataGenerator:
             self.y = numpy.concatenate ((self.y[self.batchPointer:], y))
             self.batchPointer = 0
 
+            ## Shuffle data
+            randomInd = numpy.array(range(len(self.x)))
+            numpy.random.shuffle(randomInd)
+            self.x = self.x[randomInd]
+            self.y = self.y[randomInd]
+
             if self.splitDataCounter == self.numSplit:
                 self.splitDataCounter = 0
                 self.doUpdateSplit = False
