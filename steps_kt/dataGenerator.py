@@ -94,7 +94,7 @@ class dataGenerator:
     def splitSaveLabels (self, labels):
         for sdc in range (1, self.numSplit+1):
             splitLabels = {}
-            with open (self.data + '/split' + str(self.numSplit) + '/' + str(sdc) + '/utt2spk') as f:
+            with open (self.data + '/split' + str(self.numSplit) + 'utt/' + str(sdc) + '/utt2spk') as f:
                 for line in f:
                     uid = line.split()[0]
                     if uid in labels:
@@ -112,9 +112,9 @@ class dataGenerator:
     ## Return a batch to work on
     def getNextSplitData (self):
         p1 = Popen (['apply-cmvn','--print-args=false','--norm-vars=true',
-                '--utt2spk=ark:' + self.data + '/split' + str(self.numSplit) + '/' + str(self.splitDataCounter) + '/utt2spk',
-                'scp:' + self.data + '/split' + str(self.numSplit) + '/' + str(self.splitDataCounter) + '/cmvn.scp',
-                'scp:' + self.data + '/split' + str(self.numSplit) + '/' + str(self.splitDataCounter) + '/feats.scp','ark:-'],
+                '--utt2spk=ark:' + self.data + '/split' + str(self.numSplit) + 'utt/' + str(self.splitDataCounter) + '/utt2spk',
+                'scp:' + self.data + '/split' + str(self.numSplit) + 'utt/' + str(self.splitDataCounter) + '/cmvn.scp',
+                'scp:' + self.data + '/split' + str(self.numSplit) + 'utt/' + str(self.splitDataCounter) + '/feats.scp','ark:-'],
                 stdout=PIPE, stderr=DEVNULL)
         p2 = Popen (['splice-feats','--print-args=false','--left-context=5','--right-context=5',
                 'ark:-','ark:-'], stdin=p1.stdout, stdout=PIPE)
