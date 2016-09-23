@@ -34,7 +34,7 @@ scoring_opts=
 splice_size=
 norm_vars=
 add_deltas=
-THEANO_FLAGS="device=cpu"
+THEANO_FLAGS=
 
 ## End configuration section
 

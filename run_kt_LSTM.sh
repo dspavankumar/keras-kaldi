@@ -50,3 +50,9 @@ cp $gmm/final.mdl $gmm/tree $exp/
 [ -f $exp/decode/wer_11 ] || bash steps_kt/decode_seq.sh --nj $nj \
     --add-deltas "true" --norm-vars "true" --splice-size "11" \
     $test $gmm/graph $exp $exp/decode
+
+#### Align
+##    [ -f ${exp}_ali ] || steps_kt/align_seq.sh --nj $nj --cmd "$train_cmd" \
+##        --add-deltas "true" --norm-vars "true" --splice-opts "11" \
+##        $train $lang $exp ${exp}_ali
+

@@ -53,3 +53,8 @@ cp $gmm/final.mdl $gmm/tree $exp/
 [ -f $exp/decode/wer_11 ] || bash steps_kt/decode.sh --nj $nj \
     --add-deltas "true" --norm-vars "true" --splice-opts "--left-context=5 --right-context=5" \
     $test $gmm/graph $exp $exp/decode
+
+#### Align
+##    [ -f ${exp}_ali ] || steps_kt/align.sh --nj $nj --cmd "$train_cmd" \
+##        --add-deltas "true" --norm-vars "true" --splice-opts "--left-context=5 --right-context=5" \
+##        $train $lang $exp ${exp}_ali

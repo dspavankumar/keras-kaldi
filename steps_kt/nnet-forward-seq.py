@@ -33,6 +33,8 @@ if __name__ == '__main__':
     if not model.endswith('.h5'):
         raise TypeError ('Unsupported model type. Please use h5 format. Update Keras if needed')
 
+    context = (spliceSize - 1) // 2
+
     ## Load model
     dnn = keras.models.load_model (model)
 
@@ -41,16 +43,23 @@ if __name__ == '__main__':
     encoding = sys.stdout.encoding
     signal (SIGPIPE, SIG_DFL)
 
+    ## Load a feature matrix (utterance)
     uttId, featMat = kaldiIO.readUtterance(arkIn)
-    m, n = featMat.shape
-    p, q = featMat.strides
-    featMat = numpy.lib.stride_tricks.as_strided(featMat, strides=(p, p, q), shape=(m-spliceSize+1, spliceSize, n))
 
     while uttId:
-        logProbMat = numpy.log (dnn.predict (featMat))
-        kaldiIO.writeUtterance(uttId, logProbMat, arkOut, encoding)
-        uttId, featMat = kaldiIO.readUtterance(arkIn)
         m, n = featMat.shape
         p, q = featMat.strides
         featMat = numpy.lib.stride_tricks.as_strided(featMat, strides=(p, p, q), shape=(m-spliceSize+1, spliceSize, n))
-   
+
+        ## Compute log-probabilities
+        logProbMat = numpy.log (dnn.predict (featMat))
+
+        ## Repeat logProb vectors at ends to match the number of features
+        logProbMat = numpy.concatenate([numpy.tile(logProbMat[0],(context,1)), logProbMat, numpy.tile(logProbMat[-1],(context,1))])
+
+        ## Write utterance
+        kaldiIO.writeUtterance(uttId, logProbMat, arkOut, encoding)
+
+        ## Load another feature matrix (utterance)
+        uttId, featMat = kaldiIO.readUtterance(arkIn)
+  

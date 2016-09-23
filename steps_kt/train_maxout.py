@@ -19,6 +19,7 @@
 
 import keras
 from keras.optimizers import SGD
+import keras.backend as K
 from dataGenerator import dataGenerator
 import sys
 import os
@@ -39,7 +40,7 @@ exp     = sys.argv[6]
 ## Learning parameters
 learning = {'rate' : 0.1,
             'batchSize' : 256,
-            'minEpoch' : 10,
+            'minEpoch' : 5,
             'lrScale' : 0.5,
             'lrScaleCount' : 18,
             'minValError' : 0.002}
@@ -65,24 +66,29 @@ m.compile(loss='categorical_crossentropy', optimizer=s, metrics=['accuracy'])
 print ('Learning rate: %f' % learning['rate'])
 h = [m.fit_generator (trGen, samples_per_epoch=trGen.numFeats, 
         validation_data=cvGen, nb_val_samples=cvGen.numFeats,
-        nb_epoch=learning['minEpoch'], verbose=1)]
+        nb_epoch=learning['minEpoch']-1, verbose=1)]
 m.save (exp + '/dnn.nnet.h5', overwrite=True)
 
-## Refine learning based on validation loss
-prevValError = h[-1].history['val_loss'][-2]
-while True:
-    valErrorDiff = prevValError - h[-1].history['val_loss'][-1]
-    if learning['lrScaleCount']==0 and valErrorDiff<learning['minValError']:
-        break
-    elif valErrorDiff < learning['minValError']:
-        learning['rate'] *= learning['lrScale']
-        print ('Learning rate: %f' % learning['rate'])
-        learning['lrScaleCount'] -= 1
-        m.optimizer.lr.set_value(learning['rate'])
+valErrorDiff = 1 + learning['minValError'] ## Initialise
+
+## Continue training till validation loss stagnates
+while valErrorDiff >= learning['minValError']:
+    h.append (m.fit_generator (trGen, samples_per_epoch=trGen.numFeats,
+            validation_data=cvGen, nb_val_samples=cvGen.numFeats,
+            nb_epoch=1, verbose=1))
+    m.save (exp + '/dnn.nnet.h5', overwrite=True)
+    valErrorDiff = h[-2].history['val_loss'][-1] - h[-1].history['val_loss'][-1]
+
+## Scale learning rate after each epoch
+while learning['lrScaleCount']:
+    learning['rate'] *= learning['lrScale']
+    print ('Learning rate: %f' % learning['rate'])
+    learning['lrScaleCount'] -= 1
+    K.set_value(m.optimizer.lr, learning['rate'])
+    ##m.optimizer.lr.set_value(learning['rate'])
     
     h.append (m.fit_generator (trGen, samples_per_epoch=trGen.numFeats,
             validation_data=cvGen, nb_val_samples=cvGen.numFeats,
             nb_epoch=1, verbose=1))
-    prevValError = h[-2].history['val_loss'][-1]
     m.save (exp + '/dnn.nnet.h5', overwrite=True)
 

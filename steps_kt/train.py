@@ -19,6 +19,7 @@
 
 import keras
 from keras.optimizers import SGD
+import keras.backend as K
 from dataGenerator import dataGenerator
 import sys
 import os
@@ -80,7 +81,8 @@ while learning['lrScaleCount']:
     learning['rate'] *= learning['lrScale']
     print ('Learning rate: %f' % learning['rate'])
     learning['lrScaleCount'] -= 1
-    m.optimizer.lr.set_value(learning['rate'])
+    K.set_value(m.optimizer.lr, learning['rate'])
+    ##m.optimizer.lr.set_value(learning['rate'])
     
     h.append (m.fit_generator (trGen, samples_per_epoch=trGen.numFeats,
             validation_data=cvGen, nb_val_samples=cvGen.numFeats,
