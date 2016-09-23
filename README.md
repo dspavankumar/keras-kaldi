@@ -61,13 +61,15 @@ run run_kt_LSTM.sh.
 5. decode.py is the decoding script. decode_seq.py is the script
   for LSTMs.
 
+6. align.sh is the alignment script.
+
 ## Training Schedule
 
 The script uses stochastic gradient descent with 0.5 momentum. It 
-starts with a learning rate of 0.1 for a minimum of 10 
+starts with a learning rate of 0.1 for a minimum of 5 
 iterations. When the validation loss reduces by less than 0.002 
-between successive iterations, learning rate is halved. Training 
-is continued till learning rate is scaled 18 times.
+between successive iterations, learning rate is halved, and is
+contined to be halved after each epoch, 18 times.
 
 ## Results on Timit Phone Recognition
 
@@ -85,10 +87,22 @@ Phone error rates are as follows:
 
 5. LSTM (3 hidden layers of 256 nodes, Tanh activations, LDA+MLLT alignments): 23.06%
 
+## Notes
+
+1. If using ReLU activations in LSTM, use Tensorflow backend.
+
+2. Initialise Tensorflow with the correct GPU memory fraction.
+
 ## Contributors
+
 D S Pavan Kumar
 
 dspavankumar [at] gmail [dot] com
 
+##Acknowledgements
+
+Thanks Ram, Naresh, Tejas and Veera for suggesting improvements and debugging.
+
 ## License
+
 GNU GPL v3
