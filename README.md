@@ -74,7 +74,7 @@ contined to be halved after each epoch, 18 times.
 ## Results on Timit Phone Recognition
 
 Timit database of 8 kHz sampling rate was used to train monophone,
-triphone (300 pdfs), LDA+MLLT (500 pdfs) and DNN models.
+triphone (300 pdfs), LDA+MLLT (500 pdfs), DNN and LSTM models.
 Phone error rates are as follows:
 
 1. Monophone: 34.25%
@@ -86,6 +86,19 @@ Phone error rates are as follows:
 4. DNN (3 hidden layers of 1024 nodes, ReLU activations): 23.70%
 
 5. LSTM (3 hidden layers of 256 nodes, Tanh activations, LDA+MLLT alignments): 23.06%
+
+## Results on WSJ Corpus
+
+WSJ SI-284 corpus of 8 kHz sampling rate was used to train monophone,
+triphone (1000 pdfs), DNN and LSTM models. Word error rates are as follows:
+
+1. Monophone - dev93: 37.76%, eval92: 27.95%
+
+2. Triphone - dev93: 23.78%, eval92: 16.37%
+
+3. DNN (3 hidden layers of 1024 nodes, ReLU activations)- dev93: 13.70%, eval92: 9.41%
+
+4. LSTM (3 hidden layers of 256 nodes, ReLU activations)- 13.25%, 9.16%
 
 ## Notes
 
