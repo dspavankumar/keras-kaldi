@@ -96,9 +96,9 @@ triphone (1000 pdfs), DNN and LSTM models. Word error rates are as follows:
 
 2. Triphone - dev93: 23.78%, eval92: 16.37%
 
-3. DNN (3 hidden layers of 1024 nodes, ReLU activations)- dev93: 13.70%, eval92: 9.41%
+3. DNN (3 hidden layers of 1024 nodes, ReLU activations) - dev93: 13.70%, eval92: 9.41%
 
-4. LSTM (3 hidden layers of 256 nodes, ReLU activations)- 13.25%, 9.16%
+4. LSTM (3 hidden layers of 256 nodes, ReLU activations) - dev93: 13.25%, eval92: 9.16%
 
 ## Notes
 
