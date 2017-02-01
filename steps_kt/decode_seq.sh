@@ -79,7 +79,7 @@ export $THEANO_FLAGS
 echo "$0: feature: splice(${splice_size}) norm_vars(${norm_vars}) add_deltas(${add_deltas})"
 feats="ark,s,cs:apply-cmvn --norm-vars=$norm_vars --utt2spk=ark:$sdata/JOB/utt2spk scp:$sdata/JOB/cmvn.scp scp:$sdata/JOB/feats.scp ark:- |"
 $add_deltas && feats="$feats add-deltas ark:- ark:- |"
-feats="$feats steps_kt/nnet-forward-seq.py $srcdir/dnn.nnet.h5 $splice_size |"
+feats="$feats steps_kt/nnet-forward-seq.py $srcdir/dnn.nnet.h5 $srcdir/dnn.priors.csv $splice_size |"
 
 $cmd JOB=1:$nj $dir/log/decode.JOB.log \
   latgen-faster-mapped --max-active=$max_active --beam=$beam --lattice-beam=$latbeam --acoustic-scale=$acwt --allow-partial=true --word-symbol-table=$graphdir/words.txt $dnndir/final.mdl $graphdir/HCLG.fst "$feats" "ark:|gzip -c > $dir/lat.JOB.gz"

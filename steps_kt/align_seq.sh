@@ -71,6 +71,7 @@ cp $srcdir/{tree,final.mdl} $dir || exit 1;
 
 # Select default locations to model files
 nnet=$srcdir/dnn.nnet.h5
+priors=$srcdir/dnn.priors.csv
 model=$dir/final.mdl
 
 # Check that files exist
@@ -86,7 +87,7 @@ feats="ark,s,cs:apply-cmvn --norm-vars=$norm_vars --utt2spk=ark:$sdata/JOB/utt2s
 $add_deltas && feats="$feats add-deltas ark:- ark:- |"
 
 # Finally add feature_transform and the MLP
-feats="$feats steps_kt/nnet-forward-seq.py $nnet $splice_size |"
+feats="$feats steps_kt/nnet-forward-seq.py $nnet $priors $splice_size |"
 
 echo "$0: aligning data '$data' using nnet/model '$srcdir', putting alignments in '$dir'"
 # Map oovs in reference transcription 

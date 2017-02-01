@@ -83,9 +83,9 @@ Phone error rates are as follows:
 
 3. LDA+MLLT: 27.03%
 
-4. DNN (3 hidden layers of 1024 nodes, ReLU activations): 23.70%
+4. DNN (3 hidden layers of 1024 nodes, ReLU activations): 23.71%
 
-5. LSTM (3 hidden layers of 256 nodes, Tanh activations, LDA+MLLT alignments): 23.06%
+5. LSTM (3 hidden layers of 256 nodes, Tanh activations, LDA+MLLT alignments): 23.02%
 
 ## Results on WSJ Corpus
 
@@ -96,7 +96,7 @@ triphone (1000 pdfs), DNN and LSTM models. Word error rates are as follows:
 
 2. Triphone - dev93: 23.78%, eval92: 16.37%
 
-3. DNN (3 hidden layers of 1024 nodes, ReLU activations) - dev93: 13.70%, eval92: 9.41%
+3. DNN (3 hidden layers of 1024 nodes, ReLU activations) - dev93: 13.50%, eval92: 9.16%
 
 4. LSTM (3 hidden layers of 256 nodes, ReLU activations) - dev93: 13.25%, eval92: 9.16%
 
@@ -114,7 +114,7 @@ dspavankumar [at] gmail [dot] com
 
 ##Acknowledgements
 
-Thanks Ram, Naresh, Tejas and Veera for suggesting improvements and debugging.
+Thanks to Dan Povey, Ram Sundaram, Naresh Kumar, Tejas Godambe and Veera Raghavendra for suggesting improvements and debugging.
 
 ## License
 

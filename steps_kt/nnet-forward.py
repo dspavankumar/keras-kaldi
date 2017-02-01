@@ -25,12 +25,14 @@ from signal import signal, SIGPIPE, SIG_DFL
 
 if __name__ == '__main__':
     model = sys.argv[1]
+    priors = sys.argv[2]
 
     if not model.endswith('.h5'):
         raise TypeError ('Unsupported model type. Please use h5 format. Update Keras if needed')
 
     ## Load model
     m = keras.models.load_model (model)
+    p = numpy.genfromtxt (priors, delimiter=',')
 
     arkIn = sys.stdin.buffer
     arkOut = sys.stdout.buffer
@@ -39,7 +41,8 @@ if __name__ == '__main__':
 
     uttId, featMat = kaldiIO.readUtterance(arkIn)
     while uttId:
-        logProbMat = numpy.log (m.predict (featMat))
+        logProbMat = numpy.log (m.predict (featMat) / p)
+        logProbMat [logProbMat == -numpy.inf] = -100
         kaldiIO.writeUtterance(uttId, logProbMat, arkOut, encoding)
         uttId, featMat = kaldiIO.readUtterance(arkIn)
     

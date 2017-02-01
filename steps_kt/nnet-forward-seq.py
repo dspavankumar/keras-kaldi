@@ -25,10 +25,11 @@ from signal import signal, SIGPIPE, SIG_DFL
 
 if __name__ == '__main__':
     model = sys.argv[1]
+    priors = sys.argv[2]
     
     spliceSize = 11
-    if len(sys.argv) == 3:
-        spliceSize = int(sys.argv[2])
+    if len(sys.argv) == 4:
+        spliceSize = int(sys.argv[3])
 
     if not model.endswith('.h5'):
         raise TypeError ('Unsupported model type. Please use h5 format. Update Keras if needed')
@@ -37,6 +38,7 @@ if __name__ == '__main__':
 
     ## Load model
     dnn = keras.models.load_model (model)
+    p = numpy.genfromtxt (priors, delimiter=',')
 
     arkIn = sys.stdin.buffer
     arkOut = sys.stdout.buffer
@@ -52,7 +54,8 @@ if __name__ == '__main__':
         featMat = numpy.lib.stride_tricks.as_strided(featMat, strides=(p, p, q), shape=(m-spliceSize+1, spliceSize, n))
 
         ## Compute log-probabilities
-        logProbMat = numpy.log (dnn.predict (featMat))
+        logProbMat = numpy.log (dnn.predict (featMat) / p)
+        logProbMat [logProbMat == -numpy.inf] = -100
 
         ## Repeat logProb vectors at ends to match the number of features
         logProbMat = numpy.concatenate([numpy.tile(logProbMat[0],(context,1)), logProbMat, numpy.tile(logProbMat[-1],(context,1))])
