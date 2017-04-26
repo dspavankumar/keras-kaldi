@@ -48,7 +48,10 @@ class dataGenSequences:
 
         ## Normalise number of features
         self.numFeats = self.numFeats - self.spliceSize + 1
-       
+
+        ## Determine the number of steps
+        self.numSteps = -(-self.numFeats//self.batchSize)
+      
         self.inputFeatDim = 39 ## IMPORTANT: HARDCODED. Change if necessary.
         self.outputFeatDim = self.readOutputFeatDim()
         self.splitDataCounter = 0
