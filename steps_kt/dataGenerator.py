@@ -45,6 +45,9 @@ class dataGenerator:
         ## Read labels
         with open (aliPdf) as f:
             labels, self.numFeats = self.readLabels (f)
+
+        ## Determine the number of steps
+        self.numSteps = -(-self.numFeats//self.batchSize)
        
         self.inputFeatDim = 429 ## IMPORTANT: HARDCODED. Change if necessary.
         self.outputFeatDim = self.readOutputFeatDim()

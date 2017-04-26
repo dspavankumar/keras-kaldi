@@ -61,18 +61,18 @@ m = keras.models.Sequential([
 ## Initial training
 m.compile(loss='categorical_crossentropy', optimizer=s, metrics=['accuracy'])
 print ('Learning rate: %f' % learning['rate'])
-h = [m.fit_generator (trGen, samples_per_epoch=trGen.numFeats, 
-        validation_data=cvGen, nb_val_samples=cvGen.numFeats,
-        nb_epoch=learning['minEpoch']-1, verbose=1)]
+h = [m.fit_generator (trGen, steps_per_epoch=trGen.numSteps, 
+        validation_data=cvGen, validation_steps=cvGen.numSteps,
+        epochs=learning['minEpoch']-1, verbose=2)]
 m.save (exp + '/dnn.nnet.h5', overwrite=True)
 
 valErrorDiff = 1 + learning['minValError'] ## Initialise
 
 ## Continue training till validation loss stagnates
 while valErrorDiff >= learning['minValError']:
-    h.append (m.fit_generator (trGen, samples_per_epoch=trGen.numFeats,
-            validation_data=cvGen, nb_val_samples=cvGen.numFeats,
-            nb_epoch=1, verbose=1))
+    h.append (m.fit_generator (trGen, steps_per_epoch=trGen.numSteps,
+            validation_data=cvGen, validation_steps=cvGen.numSteps,
+            epochs=1, verbose=2))
     m.save (exp + '/dnn.nnet.h5', overwrite=True)
     valErrorDiff = h[-2].history['val_loss'][-1] - h[-1].history['val_loss'][-1]
 
@@ -84,8 +84,8 @@ while learning['lrScaleCount']:
     K.set_value(m.optimizer.lr, learning['rate'])
     ##m.optimizer.lr.set_value(learning['rate'])
     
-    h.append (m.fit_generator (trGen, samples_per_epoch=trGen.numFeats,
-            validation_data=cvGen, nb_val_samples=cvGen.numFeats,
-            nb_epoch=1, verbose=1))
+    h.append (m.fit_generator (trGen, steps_per_epoch=trGen.numSteps,
+            validation_data=cvGen, validation_steps=cvGen.numSteps,
+            epochs=1, verbose=2))
     m.save (exp + '/dnn.nnet.h5', overwrite=True)
 
