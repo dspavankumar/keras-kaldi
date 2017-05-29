@@ -33,6 +33,7 @@ if __name__ == '__main__':
     ## Load model
     m = keras.models.load_model (model)
     p = numpy.genfromtxt (priors, delimiter=',')
+    p[p==0] = 1e-5 ## Deal with zero priors
 
     arkIn = sys.stdin.buffer
     arkOut = sys.stdout.buffer

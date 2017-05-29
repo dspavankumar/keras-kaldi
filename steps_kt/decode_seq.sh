@@ -34,7 +34,6 @@ scoring_opts=
 splice_size=
 norm_vars=
 add_deltas=
-THEANO_FLAGS=
 
 ## End configuration section
 
@@ -73,7 +72,8 @@ for f in $graphdir/HCLG.fst $data/feats.scp $dnndir/tree; do
   [ ! -f $f ] && echo "$0: no such file $f" && exit 1;
 done
 
-export $THEANO_FLAGS
+export KERAS_BACKEND=theano
+export THEANO_FLAGS="device=cpu"
 
 ## Set up the features
 echo "$0: feature: splice(${splice_size}) norm_vars(${norm_vars}) add_deltas(${add_deltas})"
