@@ -51,8 +51,8 @@ if __name__ == '__main__':
 
     while uttId:
         m, n = featMat.shape
-        p, q = featMat.strides
-        featMat = numpy.lib.stride_tricks.as_strided(featMat, strides=(p, p, q), shape=(m-spliceSize+1, spliceSize, n))
+        o, q = featMat.strides
+        featMat = numpy.lib.stride_tricks.as_strided(featMat, strides=(o, o, q), shape=(m-spliceSize+1, spliceSize, n))
 
         ## Compute log-probabilities
         logProbMat = numpy.log (dnn.predict (featMat) / p)
