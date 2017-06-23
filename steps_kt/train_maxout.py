@@ -18,9 +18,10 @@
 
 
 import keras
-from keras.optimizers import SGD
 import keras.backend as K
+from keras.optimizers import SGD
 from dataGenerator import dataGenerator
+import numpy
 import sys
 import os
 
@@ -39,9 +40,9 @@ exp     = sys.argv[6]
 
 ## Learning parameters
 learning = {'rate' : 0.1,
-            'batchSize' : 256,
             'minEpoch' : 5,
             'lrScale' : 0.5,
+            'batchSize' : 256,
             'lrScaleCount' : 18,
             'minValError' : 0.002}
 
@@ -52,6 +53,8 @@ cvGen = dataGenerator (data_cv, ali_cv, gmm, learning['batchSize'])
 
 ## Initialise learning parameters and models
 s = SGD(lr=learning['rate'], decay=0, momentum=0.5, nesterov=True)
+
+numpy.random.seed(512)
 m = keras.models.Sequential([
                 keras.layers.MaxoutDense(1024, nb_feature=3, input_dim=trGen.inputFeatDim),
                 keras.layers.Dropout(0.2),
@@ -62,20 +65,22 @@ m = keras.models.Sequential([
                 keras.layers.Dense(trGen.outputFeatDim, activation='softmax')])
 
 ## Initial training
-m.compile(loss='categorical_crossentropy', optimizer=s, metrics=['accuracy'])
+m.compile(loss='sparse_categorical_crossentropy', optimizer=s, metrics=['accuracy'])
 print ('Learning rate: %f' % learning['rate'])
-h = [m.fit_generator (trGen, samples_per_epoch=trGen.numFeats, 
-        validation_data=cvGen, nb_val_samples=cvGen.numFeats,
-        nb_epoch=learning['minEpoch']-1, verbose=1)]
+h = [m.fit_generator (trGen, steps_per_epoch=trGen.numSteps, 
+        validation_data=cvGen, validation_steps=cvGen.numSteps,
+        epochs=learning['minEpoch']-1, verbose=2)]
 m.save (exp + '/dnn.nnet.h5', overwrite=True)
+sys.stdout.flush()
+sys.stderr.flush()
 
 valErrorDiff = 1 + learning['minValError'] ## Initialise
 
 ## Continue training till validation loss stagnates
 while valErrorDiff >= learning['minValError']:
-    h.append (m.fit_generator (trGen, samples_per_epoch=trGen.numFeats,
-            validation_data=cvGen, nb_val_samples=cvGen.numFeats,
-            nb_epoch=1, verbose=1))
+    h.append (m.fit_generator (trGen, steps_per_epoch=trGen.numSteps,
+            validation_data=cvGen, validation_steps=cvGen.numSteps,
+            epochs=1, verbose=2))
     m.save (exp + '/dnn.nnet.h5', overwrite=True)
     valErrorDiff = h[-2].history['val_loss'][-1] - h[-1].history['val_loss'][-1]
 
@@ -87,8 +92,10 @@ while learning['lrScaleCount']:
     K.set_value(m.optimizer.lr, learning['rate'])
     ##m.optimizer.lr.set_value(learning['rate'])
     
-    h.append (m.fit_generator (trGen, samples_per_epoch=trGen.numFeats,
-            validation_data=cvGen, nb_val_samples=cvGen.numFeats,
-            nb_epoch=1, verbose=1))
+    h.append (m.fit_generator (trGen, steps_per_epoch=trGen.numSteps,
+            validation_data=cvGen, validation_steps=cvGen.numSteps,
+            epochs=1, verbose=2))
     m.save (exp + '/dnn.nnet.h5', overwrite=True)
+    sys.stdout.flush()
+    sys.stderr.flush()
 

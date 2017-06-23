@@ -33,7 +33,10 @@ class dataGenerator:
         self.exp = exp
         self.batchSize = batchSize
         
-        self.maxSplitDataSize = 100 ## These many utterances are loaded into memory at once.
+        ## Number of utterances loaded into RAM.
+        ## Increase this for speed, if you have more memory.
+        self.maxSplitDataSize = 500
+
         self.labelDir = tempfile.TemporaryDirectory()
         aliPdf = self.labelDir.name + '/alipdf.txt'
  
@@ -53,8 +56,8 @@ class dataGenerator:
         self.outputFeatDim = self.readOutputFeatDim()
         self.splitDataCounter = 0
         
-        self.x = numpy.empty ((0, self.inputFeatDim))
-        self.y = numpy.empty ((0, self.outputFeatDim))
+        self.x = numpy.empty ((0, self.inputFeatDim), dtype=numpy.float32)
+        self.y = numpy.empty (0, dtype=numpy.uint16) ## Increase dtype if dealing with >65536 classes
         self.batchPointer = 0
         self.doUpdateSplit = True
 
@@ -67,7 +70,7 @@ class dataGenerator:
         if os.path.isdir (data + 'split' + str(self.numSplit)):
             shutil.rmtree (data + 'split' + str(self.numSplit))
         Popen (['utils/split_data.sh', '--per-utt', data, str(self.numSplit)]).communicate()
-        
+
         ## Save split labels and delete labels
         self.splitSaveLabels (labels)
 
@@ -90,7 +93,7 @@ class dataGenerator:
         for line in aliPdfFile:
             line = line.split()
             numFeats += len(line)-1
-            labels[line[0]] = [int(i) for i in line[1:]]
+            labels[line[0]] = numpy.array([int(i) for i in line[1:]], dtype=numpy.uint16) ## Increase dtype if dealing with >65536 classes
         return labels, numFeats
     
     ## Save split labels into disk
@@ -105,13 +108,6 @@ class dataGenerator:
             with open (self.labelDir.name + '/' + str(sdc) + '.pickle', 'wb') as f:
                 pickle.dump (splitLabels, f)
 
-    ## Convert integer labels to binary
-    def getBinaryLabels (self, intLabelList):
-        numLabels = len(intLabelList)
-        binaryLabels = numpy.zeros ((numLabels, self.outputFeatDim))
-        binaryLabels [range(numLabels),intLabelList] = 1
-        return binaryLabels
-  
     ## Return a batch to work on
     def getNextSplitData (self):
         p1 = Popen (['apply-cmvn','--print-args=false','--norm-vars=true',
@@ -133,11 +129,10 @@ class dataGenerator:
         while True:
             uid, featMat = kaldiIO.readUtterance (p3.stdout)
             if uid == None:
-                return (numpy.vstack(featList), numpy.vstack(labelList))
+                return (numpy.vstack(featList), numpy.hstack(labelList))
             if uid in labels:
-                labelMat = self.getBinaryLabels(labels[uid])
                 featList.append (featMat)
-                labelList.append (labelMat)
+                labelList.append (labels[uid])
 
     ## Make the object iterable
     def __iter__ (self):

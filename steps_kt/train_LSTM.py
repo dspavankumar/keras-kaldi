@@ -18,9 +18,10 @@
 
 
 import keras
-from keras.optimizers import SGD
 import keras.backend as K
+from keras.optimizers import SGD
 from dataGenSequences import dataGenSequences
+import numpy
 import sys
 import os
 
@@ -39,10 +40,10 @@ exp     = sys.argv[6]
 
 ## Learning parameters
 learning = {'rate' : 0.1,
-            'batchSize' : 256,
-            'spliceSize' : 11,
             'minEpoch' : 5,
             'lrScale' : 0.5,
+            'batchSize' : 256,
+            'spliceSize' : 11,
             'lrScaleCount' : 18,
             'minValError' : 0.002}
 
@@ -53,6 +54,8 @@ cvGen = dataGenSequences (data_cv, ali_cv, gmm, learning['batchSize'], learning[
 
 ## Initialise learning parameters and models
 s = SGD(lr=learning['rate'], decay=0, momentum=0.5, nesterov=True)
+
+numpy.random.seed(512)
 m = keras.models.Sequential([
                 keras.layers.LSTM(256, input_shape=(learning['spliceSize'],trGen.inputFeatDim), activation='tanh', return_sequences=True),
                 keras.layers.LSTM(256, activation='tanh', return_sequences=True),
@@ -60,12 +63,14 @@ m = keras.models.Sequential([
                 keras.layers.Dense(trGen.outputFeatDim, activation='softmax')])
 
 ## Initial training
-m.compile(loss='categorical_crossentropy', optimizer=s, metrics=['accuracy'])
+m.compile(loss='sparse_categorical_crossentropy', optimizer=s, metrics=['accuracy'])
 print ('Learning rate: %f' % learning['rate'])
 h = [m.fit_generator (trGen, steps_per_epoch=trGen.numSteps, 
         validation_data=cvGen, validation_steps=cvGen.numSteps,
         epochs=learning['minEpoch']-1, verbose=2)]
 m.save (exp + '/dnn.nnet.h5', overwrite=True)
+sys.stdout.flush()
+sys.stderr.flush()
 
 valErrorDiff = 1 + learning['minValError'] ## Initialise
 
@@ -83,10 +88,12 @@ while learning['lrScaleCount']:
     print ('Learning rate: %f' % learning['rate'])
     learning['lrScaleCount'] -= 1
     K.set_value(m.optimizer.lr, learning['rate'])
-    #m.optimizer.lr.set_value(learning['rate'])
+    ##m.optimizer.lr.set_value(learning['rate'])
     
     h.append (m.fit_generator (trGen, steps_per_epoch=trGen.numSteps,
             validation_data=cvGen, validation_steps=cvGen.numSteps,
             epochs=1, verbose=2))
     m.save (exp + '/dnn.nnet.h5', overwrite=True)
+    sys.stdout.flush()
+    sys.stderr.flush()
 

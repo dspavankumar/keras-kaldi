@@ -18,9 +18,10 @@
 
 
 import keras
-from keras.optimizers import SGD
 import keras.backend as K
+from keras.optimizers import SGD
 from dataGenerator import dataGenerator
+import numpy
 import sys
 import os
 
@@ -39,9 +40,9 @@ exp     = sys.argv[6]
 
 ## Learning parameters
 learning = {'rate' : 0.1,
-            'batchSize' : 256,
             'minEpoch' : 5,
             'lrScale' : 0.5,
+            'batchSize' : 256,
             'lrScaleCount' : 18,
             'minValError' : 0.002}
 
@@ -52,6 +53,8 @@ cvGen = dataGenerator (data_cv, ali_cv, gmm, learning['batchSize'])
 
 ## Initialise learning parameters and models
 s = SGD(lr=learning['rate'], decay=0, momentum=0.5, nesterov=True)
+
+numpy.random.seed(512)
 m = keras.models.Sequential([
                 keras.layers.Dense(1024, input_dim=trGen.inputFeatDim, activation='relu'),
                 keras.layers.Dense(1024, activation='relu'),
@@ -59,12 +62,14 @@ m = keras.models.Sequential([
                 keras.layers.Dense(trGen.outputFeatDim, activation='softmax')])
 
 ## Initial training
-m.compile(loss='categorical_crossentropy', optimizer=s, metrics=['accuracy'])
+m.compile(loss='sparse_categorical_crossentropy', optimizer=s, metrics=['accuracy'])
 print ('Learning rate: %f' % learning['rate'])
 h = [m.fit_generator (trGen, steps_per_epoch=trGen.numSteps, 
         validation_data=cvGen, validation_steps=cvGen.numSteps,
         epochs=learning['minEpoch']-1, verbose=2)]
 m.save (exp + '/dnn.nnet.h5', overwrite=True)
+sys.stdout.flush()
+sys.stderr.flush()
 
 valErrorDiff = 1 + learning['minValError'] ## Initialise
 
@@ -88,4 +93,6 @@ while learning['lrScaleCount']:
             validation_data=cvGen, validation_steps=cvGen.numSteps,
             epochs=1, verbose=2))
     m.save (exp + '/dnn.nnet.h5', overwrite=True)
+    sys.stdout.flush()
+    sys.stderr.flush()
 
