@@ -21,6 +21,8 @@ import keras
 import keras.backend as K
 from keras.optimizers import SGD
 from dataGenSequences import dataGenSequences
+from compute_priors import compute_priors
+from shutil import copy
 import numpy
 import sys
 import os
@@ -47,7 +49,13 @@ learning = {'rate' : 0.1,
             'lrScaleCount' : 18,
             'minValError' : 0.002}
 
+## Copy final model and tree from GMM directory
 os.makedirs (exp, exist_ok=True)
+copy (gmm + '/final.mdl', exp)
+copy (gmm + '/tree', exp)
+
+## Compute priors
+compute_priors (exp, ali_tr, ali_cv)
 
 trGen = dataGenSequences (data_tr, ali_tr, gmm, learning['batchSize'], learning['spliceSize'])
 cvGen = dataGenSequences (data_cv, ali_cv, gmm, learning['batchSize'], learning['spliceSize'])

@@ -42,17 +42,10 @@ done
 ## Train
 [ -f $exp/dnn.nnet.h5 ] || python3 steps_kt/train_LSTM.py ${train}_cv05 ${gmm}_ali_cv05 ${train}_tr95 ${gmm}_ali_tr95 $gmm $exp
 
-## Get priors: Make a Python script to do this.
-ali-to-pdf $gmm/final.mdl ark:"gunzip -c ${gmm}_ali_???5/ali.*.gz |" ark,t:- | \
-    cut -d" " -f2- | tr ' ' '\n' | sed -r '/^\s*$/d' | sort | uniq -c | sort -n -k2 | \
-    awk '{a[$2]=$1; c+=$1; LI=$2} END{for(i=0;i<LI;i++) printf "%e,",a[i]/c; printf "%e",a[LI]/c}' \
-    > $exp/dnn.priors.csv
-
 ## Make graph
 [ -f $gmm/graph/HCLG.fst ] || utils/mkgraph.sh ${lang}_test_bg $gmm $gmm/graph
 
 ## Decode
-cp $gmm/final.mdl $gmm/tree $exp/
 [ -f $exp/decode/wer_11 ] || bash steps_kt/decode_seq.sh --nj $nj \
     --add-deltas "true" --norm-vars "true" --splice-size "11" \
     $test $gmm/graph $exp $exp/decode

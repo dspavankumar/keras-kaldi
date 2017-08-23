@@ -30,7 +30,7 @@ Learning models in Keras.
 
 1. Python 3.4+
 
-2. Keras with Theano/Tensorflow backend
+2. Keras with Tensorflow/Theano backend
 
 3. Kaldi
 
@@ -62,6 +62,12 @@ run run_kt_LSTM.sh.
   for LSTMs.
 
 6. align.sh is the alignment script.
+
+7. compute_priors.py computes priors.
+
+8. saveModelNnet3.sh and saveModelNnet3Raw.py convert the trained
+  feedforward DNNs into Kaldi's nnet3 format. They currently have
+  limited functionality.
 
 ## Training Schedule
 
