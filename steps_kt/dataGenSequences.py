@@ -131,7 +131,6 @@ class dataGenSequences:
             if uid == None:
                 return (numpy.vstack(featList), numpy.hstack(labelList))
             if uid in labels:
-                labelMat = self.getBinaryLabels(labels[uid])
                 featList.append (featMat)
                 labelList.append (labels[uid])
 
