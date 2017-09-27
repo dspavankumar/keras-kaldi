@@ -77,8 +77,8 @@ done
 ## Set up the features
 echo "$0: feature: splice(${splice_opts}) norm_vars(${norm_vars}) add_deltas(${add_deltas})"
 feats="ark,s,cs:apply-cmvn --norm-vars=$norm_vars --utt2spk=ark:$sdata/JOB/utt2spk scp:$sdata/JOB/cmvn.scp scp:$sdata/JOB/feats.scp ark:- |"
-$splice_feats && feats="$feats splice-feats $splice_opts ark:- ark:- |"
 $add_deltas && feats="$feats add-deltas ark:- ark:- |"
+$splice_feats && feats="$feats splice-feats $splice_opts ark:- ark:- |"
 feats="$feats python3 steps_kt/nnet-forward.py $srcdir/dnn.nnet.h5 $srcdir/dnn.priors.csv |"
 
 $decode_cmd JOB=1:$nj $dir/log/decode.JOB.log \
