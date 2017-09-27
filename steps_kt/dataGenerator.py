@@ -115,10 +115,10 @@ class dataGenerator:
                 'scp:' + self.data + '/split' + str(self.numSplit) + 'utt/' + str(self.splitDataCounter) + '/cmvn.scp',
                 'scp:' + self.data + '/split' + str(self.numSplit) + 'utt/' + str(self.splitDataCounter) + '/feats.scp','ark:-'],
                 stdout=PIPE, stderr=DEVNULL)
-        p2 = Popen (['splice-feats','--print-args=false','--left-context=5','--right-context=5',
-                'ark:-','ark:-'], stdin=p1.stdout, stdout=PIPE)
+        p2 = Popen (['add-deltas','--print-args=false','ark:-','ark:-'], stdin=p1.stdout, stdout=PIPE)
         p1.stdout.close()
-        p3 = Popen (['add-deltas','--print-args=false','ark:-','ark:-'], stdin=p2.stdout, stdout=PIPE)
+        p3 = Popen (['splice-feats','--print-args=false','--left-context=5','--right-context=5',
+                'ark:-','ark:-'], stdin=p2.stdout, stdout=PIPE)
         p2.stdout.close()
 
         with open (self.labelDir.name + '/' + str(self.splitDataCounter) + '.pickle', 'rb') as f:
